@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "language": "Hindi",
+    "inputText": "मेरे सीने में बहुत तेज दर्द हो रहा है और सांस लेने में तकलीफ हो रही है। यह दर्द पिछले एक घंटे से है और बाएं हाथ में भी जा रहा है। मुझे बहुत पसीना आ रहा है।",
+    "expectedUrgency": "Emergency",
+    "expectedCategory": "Cardiovascular",
+    "expectedSpecialist": "Cardiologist"
+  },
+  {
+    "id": 2,
+    "language": "Tamil",
+    "inputText": "கடந்த மூன்று நாட்களாக எனக்கு கடுமையான காய்ச்சல் மற்றும் இருமல் உள்ளது. நேற்று இரவு முதல் மூச்சு விடுவதில் சிரமம் உள்ளது.",
+    "expectedUrgency": "High",
+    "expectedCategory": "Respiratory",
+    "expectedSpecialist": "Pulmonologist"
+  },
+  {
+    "id": 3,
+    "language": "Telugu",
+    "inputText": "నాకు పొత్తికడుపులో విపరీతమైన నొప్పి వస్తోంది, ఉదయం నుండి మూడు సార్లు వాంతులు అయ్యాయి. చాలా బలహీనంగా ఉంది.",
+    "expectedUrgency": "High",
+    "expectedCategory": "Gastrointestinal",
+    "expectedSpecialist": "Gastroenterologist"
+  },
+  {
+    "id": 4,
+    "language": "Marathi",
+    "inputText": "माझ्या उजव्या पायाला दुखापत झाली आहे. मी काल शेतात काम करताना पडलो, त्यानंतर पाय खूप सुजला आहे आणि मला पाऊल टाकता येत नाहीये.",
+    "expectedUrgency": "Medium",
+    "expectedCategory": "Musculoskeletal",
+    "expectedSpecialist": "Orthopedician"
+  },
+  {
+    "id": 5,
+    "language": "Bengali",
+    "inputText": "আমার বাচ্চার খুব জ্বর আর ও সারাদিন ধরে পাতলা পায়খানা করছে। কিছু খেতে চাইছে না, খেলেই বমি করে দিচ্ছে। প্রস্রাবও কম করছে।",
+    "expectedUrgency": "High",
+    "expectedCategory": "Pediatric / Gastrointestinal",
+    "expectedSpecialist": "Pediatrician"
+  },
+  {
+    "id": 6,
+    "language": "Hinglish",
+    "inputText": "Mujhe pichle ek hafte se sar me bahut tez dard ho raha hai, aur chakkar bhi aa rahe hain. Aankhon ke samne dhundhla dikhta hai.",
+    "expectedUrgency": "Medium",
+    "expectedCategory": "Neurological",
+    "expectedSpecialist": "Neurologist"
+  },
+  {
+    "id": 7,
+    "language": "Gujarati",
+    "inputText": "મને છેલ્લા દસ દિવસથી પેશાબ કરતી વખતે ખૂબ બળતરા થાય છે અને પીઠમાં પાછળના ભાગે દુખાવો થાય છે. ગઈકાલથી તાવ પણ આવ્યો છે.",
+    "expectedUrgency": "Medium",
+    "expectedCategory": "Nephrology / Urology",
+    "expectedSpecialist": "Urologist / General Physician"
+  },
+  {
+    "id": 8,
+    "language": "Kannada",
+    "inputText": "ನನ್ನ ತಂದೆಗೆ ಇದ್ದಕ್ಕಿದ್ದಂತೆ ಎಡಭಾಗದ ಮುಖ ಸೊಟ್ಟಗಾಗಿದೆ ಮತ್ತು ಮಾತನಾಡಲು ತೊಂದರೆಯಾಗುತ್ತಿದೆ. ಎಡಗೈ ಮತ್ತು ಎಡಗಾಲು ಎತ್ತಲು ಆಗುತ್ತಿಲ್ಲ.",
+    "expectedUrgency": "Emergency",
+    "expectedCategory": "Neurological",
+    "expectedSpecialist": "Neurologist"
+  },
+  {
+    "id": 9,
+    "language": "Malayalam",
+    "inputText": "എനിക്ക് രണ്ടു ദിവസമായി തൊണ്ടവേദനയും വിഴുങ്ങാൻ ബുദ്ധിമുട്ടുമുണ്ട്. ചെറിയ പനിയും അനുഭവപ്പെടുന്നുണ്ട്.",
+    "expectedUrgency": "Low",
+    "expectedCategory": "ENT / Respiratory",
+    "expectedSpecialist": "ENT Specialist"
+  },
+  {
+    "id": 10,
+    "language": "Punjabi",
+    "inputText": "ਮੈਨੂੰ ਪਿਛਲੇ ਦੋ ਮਹੀਨਿਆਂ ਤੋਂ ਖੰਘ ਆ ਰਹੀ ਹੈ, ਖੰਘ ਨਾਲ ਕਈ ਵਾਰ ਬਲਗਮ ਵਿੱਚ ਖੂਨ ਵੀ ਆਉਂਦਾ ਹੈ ਅਤੇ ਭਾਰ ਬਹੁਤ ਘਟ ਗਿਆ ਹੈ।",
+    "expectedUrgency": "High",
+    "expectedCategory": "Respiratory",
+    "expectedSpecialist": "Pulmonologist"
+  },
+  {
+    "id": 11,
+    "language": "Hindi",
+    "inputText": "मुझे कल रात से उल्टी-दस्त हो रहे हैं, कुछ भी खा-पी नहीं पा रहा हूं। बहुत कमजोरी महसूस हो रही है और चक्कर आ रहे हैं।",
+    "expectedUrgency": "High",
+    "expectedCategory": "Gastrointestinal",
+    "expectedSpecialist": "General Physician"
+  },
+  {
+    "id": 12,
+    "language": "Tamil",
+    "inputText": "எனது வலது கையில் ஒரு வாரமாக கடுமையான அரிப்பும் சிவந்த தடிப்புகளும் ஏற்பட்டுள்ளன. அரிப்பு தாங்க முடியவில்லை.",
+    "expectedUrgency": "Low",
+    "expectedCategory": "Dermatological",
+    "expectedSpecialist": "Dermatologist"
+  },
+  {
+    "id": 13,
+    "language": "Telugu",
+    "inputText": "నాకు షుగర్ వ్యాధి ఉంది. నా కుడి కాలి వేలికి చిన్న గాయం అయ్యింది, కానీ అది తగ్గడం లేదు, పుండులా మారి నల్లగా అవుతోంది.",
+    "expectedUrgency": "High",
+    "expectedCategory": "Endocrine / Surgical",
+    "expectedSpecialist": "General Surgeon / Diabetologist"
+  },
+  {
+    "id": 14,
+    "language": "Marathi",
+    "inputText": "माझ्या पाठीत खूप जोरात कळ येत आहे. वजन उचलताना पाठीत लचक भरली, आता वाकताही येत नाहीये आणि खूप वेदना होत आहेत.",
+    "expectedUrgency": "Medium",
+    "expectedCategory": "Musculoskeletal",
+    "expectedSpecialist": "Orthopedician"
+  },
+  {
+    "id": 15,
+    "language": "Bengali",
+    "inputText": "আমার গর্ভধারণের ৭ মাস চলছে। আজ সকাল থেকে খুব মাথা ঘুরছে আর শরীর ফুলে গেছে। রক্তচাপ মাপালে জানা গেছে খুব বেশি আছে।",
+    "expectedUrgency": "High",
+    "expectedCategory": "Obstetrics & Gynecology",
+    "expectedSpecialist": "Gynecologist"
+  },
+  {
+    "id": 16,
+    "language": "Hinglish",
+    "inputText": "Mere kaan me do din se bahut tez dard ho raha hai aur pachaas percent sunai dena band ho gaya hai, halka peela pani bhi nikal raha hai.",
+    "expectedUrgency": "Medium",
+    "expectedCategory": "ENT",
+    "expectedSpecialist": "ENT Specialist"
+  },
+  {
+    "id": 17,
+    "language": "Gujarati",
+    "inputText": "મારી આંખ લાલ થઈ ગઈ છે, તેમાં ખૂબ ખંજવાળ આવે છે અને પાણી નીકળે છે. પ્રકાશ તરફ જોવામાં તકલીફ પડે છે.",
+    "expectedUrgency": "Low",
+    "expectedCategory": "Ophthalmological",
+    "expectedSpecialist": "Ophthalmologist"
+  },
+  {
+    "id": 18,
+    "language": "Kannada",
+    "inputText": "ನನಗೆ ಕಳೆದ ಒಂದು ವಾರದಿಂದ ಸconstant ತಲೆನೋವು ಇದೆ, ಈಗ ವಾಂತಿ ಕೂಡ ಬರುತ್ತಿದೆ ಮತ್ತು ಕಣ್ಣುಗಳು ಮಂಜಾಗುತ್ತಿವೆ.",
+    "expectedUrgency": "High",
+    "expectedCategory": "Neurological",
+    "expectedSpecialist": "Neurologist"
+  },
+  {
+    "id": 19,
+    "language": "Malayalam",
+    "inputText": "നെഞ്ചിൽ ഒരു ഭാരം തോന്നുന്നു, പടികൾ കയറുമ്പോൾ ശ്വാസം മുട്ടുന്നു. വിശ്രമിക്കുമ്പോൾ കുറവുണ്ട്.",
+    "expectedUrgency": "High",
+    "expectedCategory": "Cardiovascular",
+    "expectedSpecialist": "Cardiologist"
+  },
+  {
+    "id": 20,
+    "language": "Punjabi",
+    "inputText": "ਮੇਰੇ ਸੱਜੇ ਕੰਨ ਦੇ ਪਿੱਛੇ ਗੰਢ ਬਣ ਗਈ ਹੈ, ਜੋ ਹੌਲੀ-ਹੌਲੀ ਵੱਡੀ ਹੋ ਰਹੀ ਹੈ। ਦਬਾਉਣ 'ਤੇ ਕੋਈ ਦਰਦ ਨਹੀਂ ਹੁੰਦਾ, ਪਰ ਬੇਚੈਨੀ ਲੱਗਦੀ ਹੈ।",
+    "expectedUrgency": "Medium",
+    "expectedCategory": "General Surgery / Oncology",
+    "expectedSpecialist": "Oncologist / General Surgeon"
+  }
+]

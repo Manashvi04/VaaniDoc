@@ -1,0 +1,22 @@
+# Dependencies and generated builds
+node_modules/
+frontend/node_modules/
+backend/node_modules/
+frontend/dist/
+
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+backend/.env
+backend/.env.*
+!backend/.env.example
+
+# Generated validation output
+validation/validation_report.md
+
+# Logs and editor files
+*.log
+.DS_Store
+.vscode/
+.idea/

@@ -1,0 +1,8 @@
+{
+  "name": "vaanidoc-validation",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "validate": "node validate.js"
+  }
+}
