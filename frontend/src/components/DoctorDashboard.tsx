@@ -22,8 +22,29 @@ interface IntakeSession {
   smartQuestions?: string[];
   treatmentDraft?: string;
   patientFriendlySummary?: string;
+  redFlags?: string[];
+  confidence?: number;
+  data?: {
+    smart_questions?: string[];
+    treatment_draft?: string;
+    patient_friendly_summary?: string;
+    red_flags?: string[];
+    confidence?: number;
+  };
   isOfflineGenerated?: boolean;
 }
+
+const normalizeSession = (session: IntakeSession): IntakeSession => {
+  const apiData = session.data;
+  return {
+    ...session,
+    smartQuestions: session.smartQuestions ?? apiData?.smart_questions,
+    treatmentDraft: session.treatmentDraft ?? apiData?.treatment_draft,
+    patientFriendlySummary: session.patientFriendlySummary ?? apiData?.patient_friendly_summary,
+    redFlags: session.redFlags ?? apiData?.red_flags,
+    confidence: session.confidence ?? apiData?.confidence
+  };
+};
 
 interface DoctorDashboardProps {
   initialSessions: IntakeSession[];
@@ -32,7 +53,7 @@ interface DoctorDashboardProps {
 }
 
 export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ initialSessions, onSessionCleared, lowBandwidthMode }) => {
-  const [sessions, setSessions] = useState<IntakeSession[]>(initialSessions);
+  const [sessions, setSessions] = useState<IntakeSession[]>(() => initialSessions.map(normalizeSession));
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [newSessionNotification, setNewSessionNotification] = useState<string | null>(null);
@@ -42,6 +63,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ initialSession
   const [checkedQuestions, setCheckedQuestions] = useState<Record<string, boolean>>({});
   const [showQRModal, setShowQRModal] = useState(false);
   const [smsSentText, setSmsSentText] = useState(false);
+  const [copilotError, setCopilotError] = useState<string | null>(null);
 
   // Filter States
   const [searchTerm, setSearchTerm] = useState('');
@@ -50,7 +72,7 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ initialSession
 
   // Sync state with props
   useEffect(() => {
-    setSessions(initialSessions);
+    setSessions(initialSessions.map(normalizeSession));
     if (initialSessions.length > 0 && !selectedSessionId) {
       setSelectedSessionId(initialSessions[0].sessionId);
     }
@@ -71,8 +93,13 @@ export const DoctorDashboard: React.FC<DoctorDashboardProps> = ({ initialSession
     });
 
     socket.on('sessions-update', (updatedSessions: IntakeSession[]) => {
-      const sorted = sortSessionsByUrgency(updatedSessions);
+      if (!Array.isArray(updatedSessions)) {
+        setCopilotError('The live session response was not in the expected format.');
+        return;
+      }
+      const sorted = sortSessionsByUrgency(updatedSessions.map(normalizeSession));
       setSessions(sorted);
+      setCopilotError(null);
       
       if (sorted.length > 0) {
         if (!sorted.some(s => s.sessionId === selectedSessionId)) {
@@ -515,161 +542,143 @@ ${selectedSession.treatmentDraft || 'N/A'}
 
               </div>
 
-              {/* Generative AI Clinical Copilot Section */}
-              <div className="copilot-card" style={{ border: '2px solid var(--primary)', borderRadius: 'var(--radius-md)', overflow: 'hidden', boxShadow: 'var(--shadow-md)' }}>
-                <div className="copilot-header" style={{ display: 'flex', backgroundColor: 'var(--primary)', color: '#ffffff', padding: '0.25rem' }}>
-                  <button
-                    className={`copilot-tab-btn ${copilotTab === 'clinical' ? 'active' : ''}`}
-                    style={{
-                      flex: 1,
-                      padding: '0.65rem',
-                      border: 'none',
-                      backgroundColor: copilotTab === 'clinical' ? '#ffffff' : 'transparent',
-                      color: copilotTab === 'clinical' ? 'var(--primary)' : '#ffffff',
-                      fontWeight: 800,
-                      fontSize: '0.8rem',
-                      textTransform: 'uppercase',
-                      cursor: 'pointer',
-                      borderRadius: '4px',
-                      transition: 'all 0.2s'
-                    }}
-                    onClick={() => setCopilotTab('clinical')}
-                  >
-                    🧠 AI Clinical Copilot & Treatment Draft
-                  </button>
-                  <button
-                    className={`copilot-tab-btn ${copilotTab === 'patient' ? 'active' : ''}`}
-                    style={{
-                      flex: 1,
-                      padding: '0.65rem',
-                      border: 'none',
-                      backgroundColor: copilotTab === 'patient' ? '#ffffff' : 'transparent',
-                      color: copilotTab === 'patient' ? 'var(--primary)' : '#ffffff',
-                      fontWeight: 800,
-                      fontSize: '0.8rem',
-                      textTransform: 'uppercase',
-                      cursor: 'pointer',
-                      borderRadius: '4px',
-                      transition: 'all 0.2s'
-                    }}
-                    onClick={() => setCopilotTab('patient')}
-                  >
-                    📄 Patient Handout summary
-                  </button>
+              {/* Clinical decision-support workspace */}
+              <section className="copilot-workspace" aria-labelledby="copilot-workspace-title">
+                <div className="copilot-workspace-heading">
+                  <div>
+                    <p className="copilot-kicker">Consultation workspace</p>
+                    <h3 id="copilot-workspace-title">Clinical decision support</h3>
+                  </div>
+                  <div className="copilot-tabs" role="tablist" aria-label="Consultation support views">
+                    <button
+                      id="clinical-tab"
+                      className={`copilot-tab ${copilotTab === 'clinical' ? 'active' : ''}`}
+                      role="tab"
+                      aria-selected={copilotTab === 'clinical'}
+                      aria-controls="clinical-panel"
+                      onClick={() => setCopilotTab('clinical')}
+                    >
+                      AI Clinical Copilot
+                    </button>
+                    <button
+                      id="patient-tab"
+                      className={`copilot-tab ${copilotTab === 'patient' ? 'active' : ''}`}
+                      role="tab"
+                      aria-selected={copilotTab === 'patient'}
+                      aria-controls="patient-panel"
+                      onClick={() => setCopilotTab('patient')}
+                    >
+                      Patient Handout
+                    </button>
+                  </div>
                 </div>
 
-                <div className="copilot-body" style={{ padding: '1.25rem', backgroundColor: '#ffffff' }}>
-                  {copilotTab === 'clinical' ? (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                      
-                      {/* Follow-up questions */}
-                      <div>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem', letterSpacing: '0.5px' }}>
-                          ❓ Recommended Follow-Up Questions (Verify during intake)
-                        </span>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-                          {(selectedSession.smartQuestions && selectedSession.smartQuestions.length > 0) ? (
-                            selectedSession.smartQuestions.map((q, idx) => {
-                              const key = `${selectedSessionId}-${idx}`;
-                              const isChecked = !!checkedQuestions[key];
-                              return (
-                                <label
-                                  key={idx}
-                                  style={{
-                                    display: 'flex',
-                                    alignItems: 'flex-start',
-                                    gap: '0.5rem',
-                                    fontSize: '0.85rem',
-                                    cursor: 'pointer',
-                                    backgroundColor: isChecked ? 'var(--primary-light)' : '#f8fafc',
-                                    padding: '0.5rem 0.75rem',
-                                    borderRadius: '6px',
-                                    border: isChecked ? '1px solid rgba(13,148,136,0.3)' : '1px solid #e2e8f0',
-                                    color: isChecked ? 'var(--primary-hover)' : 'var(--text-body)',
-                                    fontWeight: isChecked ? 600 : 500,
-                                    transition: 'all 0.2s'
-                                  }}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    checked={isChecked}
-                                    onChange={() => toggleQuestionCheck(idx)}
-                                    style={{ marginTop: '0.15rem', cursor: 'pointer' }}
-                                  />
-                                  <span>{q}</span>
-                                </label>
-                              );
-                            })
-                          ) : (
-                            <p style={{ margin: 0, fontSize: '0.8rem', color: 'var(--text-muted)' }}>No follow-up questions generated.</p>
+                {copilotError ? (
+                  <div className="copilot-status copilot-status-error" role="alert">
+                    <strong>Unable to load decision-support content</strong>
+                    <span>{copilotError}</span>
+                  </div>
+                ) : copilotTab === 'clinical' ? (
+                  <div id="clinical-panel" role="tabpanel" aria-labelledby="clinical-tab" className="copilot-panel">
+                    {!selectedSession.clinicalSummary &&
+                     !selectedSession.treatmentDraft &&
+                     !selectedSession.smartQuestions?.length &&
+                     !selectedSession.redFlags?.length ? (
+                      <div className="copilot-status">
+                        <strong>Clinical draft not generated yet</strong>
+                        <span>Complete the patient symptom analysis to generate clinician decision-support content.</span>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="copilot-section-grid">
+                          {(selectedSession.clinicalSummary || selectedSession.associatedSymptoms?.length) && (
+                            <article className="copilot-section-card">
+                              <h4>Clinical Assessment</h4>
+                              {selectedSession.clinicalSummary && <p>{selectedSession.clinicalSummary}</p>}
+                              {!!selectedSession.associatedSymptoms?.length && (
+                                <div className="finding-list">
+                                  {selectedSession.associatedSymptoms.map((symptom, index) => <span key={index}>{symptom}</span>)}
+                                </div>
+                              )}
+                            </article>
+                          )}
+
+                          {!!selectedSession.smartQuestions?.length && (
+                            <article className="copilot-section-card">
+                              <h4>Suggested Next Steps</h4>
+                              <p className="section-helper">Follow-up questions supplied by the clinical analysis for clinician verification.</p>
+                              <div className="question-list">
+                                {selectedSession.smartQuestions.map((question, index) => {
+                                  const key = `${selectedSessionId}-${index}`;
+                                  return (
+                                    <label key={key} className={checkedQuestions[key] ? 'checked' : ''}>
+                                      <input type="checkbox" checked={!!checkedQuestions[key]} onChange={() => toggleQuestionCheck(index)} />
+                                      <span>{question}</span>
+                                    </label>
+                                  );
+                                })}
+                              </div>
+                            </article>
+                          )}
+
+                          {selectedSession.treatmentDraft && (
+                            <article className="copilot-section-card treatment-card">
+                              <h4>Treatment Draft</h4>
+                              <p>{selectedSession.treatmentDraft}</p>
+                            </article>
+                          )}
+
+                          {!!selectedSession.redFlags?.length && (
+                            <article className="copilot-section-card red-flags-card">
+                              <h4>Red Flags</h4>
+                              <ul>{selectedSession.redFlags.map((flag, index) => <li key={index}>{flag}</li>)}</ul>
+                            </article>
                           )}
                         </div>
+                        <aside className="clinical-disclaimer">
+                          <strong>Clinical disclaimer</strong>
+                          <span>AI-generated decision support only. Review all findings and drafts before making clinical decisions.</span>
+                        </aside>
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <div id="patient-panel" role="tabpanel" aria-labelledby="patient-tab" className="copilot-panel">
+                    {!selectedSession.patientFriendlySummary ? (
+                      <div className="copilot-status">
+                        <strong>Patient handout not generated yet</strong>
+                        <span>Complete the patient symptom analysis before sharing or printing a handout.</span>
                       </div>
-
-                      {/* Care Guidance Plan */}
-                      <div style={{ borderTop: '1px solid var(--border-color)', paddingTop: '1rem' }}>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem', letterSpacing: '0.5px' }}>
-                          📋 Generative Care & Advice Draft (Non-pharmacological)
-                        </span>
-                        <div style={{ backgroundColor: 'var(--primary-light)', border: '1px solid rgba(13,148,136,0.2)', padding: '0.75rem 1rem', borderRadius: '8px', fontSize: '0.85rem', color: 'var(--text-body)', lineHeight: '1.5' }}>
-                          {selectedSession.treatmentDraft || 'Ensure rest, hydration, and seek a general practitioner review.'}
-                        </div>
-                      </div>
-
-                    </div>
-                  ) : (
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                      
-                      {/* Simplified Patient summary */}
-                      <div>
-                        <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', display: 'block', marginBottom: '0.4rem', letterSpacing: '0.5px' }}>
-                          🗣️ Native-Language Simplified Summary ({selectedSession.languageSpoken.split(' ')[0]})
-                        </span>
-                        <div style={{ border: '1px solid var(--border-color)', backgroundColor: '#fafbfb', padding: '0.75rem 1rem', borderRadius: '8px', fontSize: '0.9rem', fontStyle: 'italic', color: 'var(--text-main)', lineHeight: '1.6' }}>
-                          "{selectedSession.patientFriendlySummary || 'No simplified summary available.'}"
-                        </div>
-                      </div>
-
-                      {/* Print and share handlers */}
-                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem' }}>
-                        <button
-                          className="btn"
-                          style={{ flex: 1, padding: '0.5rem', fontSize: '0.8rem', fontWeight: 700, backgroundColor: '#ffffff', border: '1px solid var(--primary)', color: 'var(--primary)' }}
-                          onClick={() => {
+                    ) : (
+                      <>
+                        <article className="handout-card">
+                          <div className="handout-card-header">
+                            <div>
+                              <span>Patient-facing summary</span>
+                              <h4>What we discussed and what to do next</h4>
+                            </div>
+                            <span className="language-chip">{selectedSession.languageSpoken || 'Language not specified'}</span>
+                          </div>
+                          <p>{selectedSession.patientFriendlySummary}</p>
+                        </article>
+                        <div className="handout-actions">
+                          <button className="btn" onClick={() => {
                             const w = window.open();
                             if (w) {
-                              w.document.write(`
-                                <div style="font-family: sans-serif; padding: 2rem; max-width: 600px; margin: 0 auto; border: 2px solid #0d9488; border-radius: 8px;">
-                                  <h2 style="color: #0d9488; border-bottom: 2px solid #0d9488; padding-bottom: 0.5rem;">VaaniDoc - Patient Handout</h2>
-                                  <p><strong>Patient:</strong> ${selectedSession.patientName} (Age: ${selectedSession.age || 'N/A'} | Gender: ${selectedSession.gender})</p>
-                                  <p><strong>Chief Complaint:</strong> ${selectedSession.chiefComplaint}</p>
-                                  <h3 style="color: #0f172a; margin-top: 1.5rem;">Triage Summary / डॉक्टर का परामर्श</h3>
-                                  <p style="font-size: 1.15rem; font-style: italic; background-color: #f0fdfa; padding: 1rem; border-radius: 4px; line-height: 1.6;">"${selectedSession.patientFriendlySummary}"</p>
-                                  <footer style="margin-top: 2rem; font-size: 0.75rem; color: #64748b; text-align: center; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
-                                    This is a clinical intake receipt. Consult your physician for treatment.
-                                  </footer>
-                                </div>
-                              `);
+                              const safeSummary = selectedSession.patientFriendlySummary || '';
+                              w.document.write(`<main style="font-family: sans-serif; padding: 2rem; max-width: 680px; margin: auto"><h1 style="color:#0d9488">VaaniDoc Patient Handout</h1><p><strong>Patient:</strong> ${selectedSession.patientName}</p><p><strong>Consult ID:</strong> ${selectedSession.sessionId}</p><h2>Summary</h2><p style="font-size:1.1rem;line-height:1.7">${safeSummary}</p><hr><small>This intake summary must be reviewed with your clinician.</small></main>`);
+                              w.document.close();
                               w.print();
                               w.close();
                             }
-                          }}
-                        >
-                          🖨️ Print Handout Card
-                        </button>
-                        <button
-                          className="btn btn-primary"
-                          style={{ flex: 1, padding: '0.5rem', fontSize: '0.8rem', fontWeight: 700 }}
-                          onClick={() => setShowQRModal(true)}
-                        >
-                          📲 Sync to Patient Phone
-                        </button>
-                      </div>
-
-                    </div>
-                  )}
-                </div>
-              </div>
+                          }}>Print Handout</button>
+                          <button className="btn btn-primary" onClick={() => setShowQRModal(true)}>Sync to Patient Phone</button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                )}
+              </section>
 
               {/* Privacy disclaimer */}
               <div className="privacy-disclaimer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', backgroundColor: '#f8fafc', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', fontSize: '0.8rem', color: 'var(--text-muted)' }}>

@@ -607,6 +607,7 @@ body {
 
 .details-body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 1.75rem;
 }
@@ -1222,6 +1223,57 @@ body {
 
 .copilot-tab-btn.active {
   box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Consultation decision-support workspace */
+.copilot-workspace { width: 100%; height: auto; min-height: 320px; flex: 0 0 auto; display: flex; flex-direction: column; border: 1px solid #d8e7e3; border-radius: 14px; overflow: visible; background: #fff; box-shadow: 0 7px 20px rgba(15,61,58,.05); }
+.copilot-workspace-heading { flex-shrink: 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem 0; border-bottom: 1px solid #e2ece9; border-radius: 14px 14px 0 0; background: #fbfefd; }
+.copilot-workspace-heading h3 { margin: .15rem 0 1rem; color: #153f3b; font: 800 1.05rem var(--font-title); }
+.copilot-kicker { margin: 0; color: #68827e; font-size: .66rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.copilot-tabs { flex-shrink: 0; display: flex; gap: .25rem; }
+.copilot-tab { width: auto; padding: .65rem .85rem .72rem; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #607a76; font: 750 .78rem var(--font-title); cursor: pointer; white-space: nowrap; }
+.copilot-tab:hover { color: var(--primary); background: #f1faf7; }
+.copilot-tab.active { color: #087d70; border-bottom-color: #0d9488; background: #eefaf7; }
+.copilot-tab:focus-visible { outline: 3px solid rgba(13,148,136,.25); outline-offset: -3px; }
+.copilot-panel { display: block; width: 100%; height: auto; flex: 0 0 auto; overflow: visible; padding: 1.2rem; box-sizing: border-box; }
+.copilot-section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
+.copilot-section-card { min-width: 0; padding: 1rem; border: 1px solid #dfeae7; border-radius: 10px; background: #fff; }
+.copilot-section-card h4, .handout-card h4 { margin: 0 0 .55rem; color: #173f3b; font: 800 .88rem var(--font-title); }
+.copilot-section-card p { margin: 0; color: #45615d; font-size: .83rem; line-height: 1.65; white-space: pre-wrap; }
+.copilot-section-card .section-helper { margin-bottom: .7rem; color: #78908c; font-size: .73rem; }
+.treatment-card { background: #f4fbf9; border-color: #cce7e1; }
+.red-flags-card { background: #fff7f6; border-color: #f1c9c3; }
+.red-flags-card h4, .red-flags-card li { color: #9f2923; }
+.red-flags-card ul { margin: .35rem 0 0; padding-left: 1.15rem; font-size: .82rem; line-height: 1.65; }
+.finding-list { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .75rem; }
+.finding-list span { padding: .25rem .5rem; border-radius: 99px; background: #edf6f4; color: #476761; font-size: .7rem; font-weight: 700; }
+.question-list { display: grid; gap: .4rem; }
+.question-list label { display: flex; align-items: flex-start; gap: .55rem; padding: .5rem .6rem; border: 1px solid #e1ebe8; border-radius: 7px; color: #405e59; font-size: .78rem; line-height: 1.45; cursor: pointer; }
+.question-list label.checked { background: #effaf7; color: #17766c; }
+.question-list input { margin-top: .15rem; accent-color: var(--primary); }
+.clinical-disclaimer { display: flex; gap: .5rem; align-items: baseline; margin-top: .9rem; padding: .65rem .75rem; border-radius: 8px; background: #f5f8f7; color: #647b77; font-size: .72rem; line-height: 1.5; }
+.clinical-disclaimer strong { color: #385854; white-space: nowrap; }
+.copilot-status { display: flex; flex-direction: column; align-items: center; gap: .35rem; padding: 2.2rem 1rem; border: 1px dashed #cddeda; border-radius: 10px; background: #f9fcfb; color: #6c8581; text-align: center; font-size: .8rem; }
+.copilot-status strong { color: #315752; font-size: .9rem; }
+.copilot-status-error { border-color: #efc3bd; background: #fff7f6; color: #a34840; }
+.copilot-status-error strong { color: #912d27; }
+.handout-card { padding: 1.15rem; border: 1px solid #d9e8e4; border-radius: 10px; background: #fcfefd; }
+.handout-card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; padding-bottom: .8rem; border-bottom: 1px solid #e4eeeb; }
+.handout-card-header > div > span { color: #718984; font-size: .66rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.handout-card-header h4 { margin: .25rem 0 0; }
+.language-chip { padding: .28rem .55rem; border-radius: 99px; background: #eaf8f4; color: #14776c; font-size: .68rem; font-weight: 750; }
+.handout-card > p { margin: .9rem 0 0; color: #2d514c; font-size: .93rem; line-height: 1.75; white-space: pre-wrap; }
+.handout-actions { display: flex; justify-content: flex-end; gap: .55rem; margin-top: .85rem; }
+.handout-actions .btn { width: auto; padding: .55rem .8rem; font-size: .76rem; }
+
+@media (max-width: 680px) {
+  .copilot-workspace-heading { align-items: stretch; flex-direction: column; padding-bottom: 0; }
+  .copilot-workspace-heading h3 { margin-bottom: 0; }
+  .copilot-tabs { overflow-x: auto; }
+  .copilot-section-grid { grid-template-columns: 1fr; }
+  .clinical-disclaimer, .handout-card-header { align-items: flex-start; flex-direction: column; }
+  .handout-actions { flex-wrap: wrap; }
+  .handout-actions .btn { flex: 1; }
 }
 
 /* Product-grade clinical workspace */
