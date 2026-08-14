@@ -24,6 +24,7 @@ interface IntakeSession {
   urgencyClassification: string;
   urgencyReason: string;
   suggestedSpecialist: string;
+  confidence?: number;
   isOfflineGenerated?: boolean;
 }
 

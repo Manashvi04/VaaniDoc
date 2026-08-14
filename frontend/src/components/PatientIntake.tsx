@@ -24,47 +24,9 @@ interface PatientIntakeProps {
   lowBandwidthMode: boolean;
 }
 
-const BODY_PRESETS = [
-  {
-    id: 'chest',
-    name: 'Chest / Lungs 🫁',
-    presets: [
-      { label: 'Chest Pain / Pressure', language: 'Hinglish / English', text: 'Severe crushing chest pain on the left side, radiating to my neck and arm for 45 minutes, feeling sweaty.' },
-      { label: 'Shortness of Breath', language: 'Auto Detect (સ્વય่ม ચિહ્નો)', text: 'I am having severe difficulty breathing, wheezing, and chest tightness when trying to talk.' }
-    ]
-  },
-  {
-    id: 'head',
-    name: 'Head / Brain 🧠',
-    presets: [
-      { label: 'Stroke Symptoms', language: 'Auto Detect (સ્વય่ม ચિહ્નો)', text: 'Sudden onset of slurred speech, confusion, and complete loss of strength in my left arm and face.' },
-      { label: 'Severe Headache', language: 'Hinglish / English', text: 'Throbbing pain on the right side of my head, sensitivity to light, and vomiting since yesterday.' }
-    ]
-  },
-  {
-    id: 'abdomen',
-    name: 'Abdomen 🤢',
-    presets: [
-      { label: 'Severe Stomach Pain', language: 'Hindi (हिंदी)', text: 'मेरे पेट के दाहिने हिस्से में बहुत तेज दर्द हो रहा है और साथ में तीन बार उल्टी भी हुई है।' },
-      { label: 'Food Poisoning', language: 'Hinglish / English', text: 'Severe stomach cramping, frequent watery diarrhea, and mild fever since eating street food yesterday.' }
-    ]
-  },
-  {
-    id: 'general',
-    name: 'General / Fever 🌡️',
-    presets: [
-      { label: 'High Fever & Cough', language: 'Hindi (हिंदी)', text: 'मुझे पिछले तीन दिनों से तेज बुखार है, बदन दर्द हो रहा है और सुखी खांसी आ रही है।' },
-      { label: 'Chronic Fatigue', language: 'Hinglish / English', text: 'Generalized muscle pain, joint stiffness, and extreme weakness for the past 2 weeks.' }
-    ]
-  }
-];
-
 export const PatientIntake: React.FC<PatientIntakeProps> = ({ isOnline, onNewIntakeCreated, lowBandwidthMode }) => {
   // Input modes: 'speak' or 'type'
   const [inputMode, setInputMode] = useState<'speak' | 'type'>('speak');
-
-  // Preset state
-  const [activePresetTab, setActivePresetTab] = useState('chest');
 
   // Form states
   const [name, setName] = useState('');
@@ -272,18 +234,6 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({ isOnline, onNewInt
     }
   };
 
-  const loadExampleText = () => {
-    setSymptomText(selectedLanguage.defaultText);
-  };
-
-  const applyPreset = (preset: { label: string, language: string, text: string }) => {
-    const matchedLang = LANGUAGES.find(l => l.name === preset.language);
-    if (matchedLang) {
-      setSelectedLanguage(matchedLang);
-    }
-    setSymptomText(preset.text);
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!symptomText.trim()) {
@@ -389,63 +339,6 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({ isOnline, onNewInt
           <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', margin: '0 0 1.5rem 0' }}>
             Consult ID: <strong style={{ color: 'var(--primary)', fontFamily: 'var(--font-mono)', fontSize: '0.9rem' }}>{sessionId || 'Assigning ID...'}</strong>
           </p>
-
-          {/* Interactive Presets Grid grouped by body categories */}
-          <div className="presets-container" style={{ padding: '1rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-md)', backgroundColor: 'var(--primary-light)', marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--primary)', textTransform: 'uppercase', letterSpacing: '0.8px', display: 'block', marginBottom: '0.65rem' }}>
-              🩺 SELECT AN INTAKE CASE STUDY PRESET
-            </span>
-            
-            {/* Category tabs */}
-            <div style={{ display: 'flex', gap: '0.3rem', marginBottom: '0.75rem', overflowX: 'auto', paddingBottom: '0.2rem' }}>
-              {BODY_PRESETS.map(tab => (
-                <button
-                  key={tab.id}
-                  type="button"
-                  onClick={() => setActivePresetTab(tab.id)}
-                  style={{
-                    padding: '0.3rem 0.65rem',
-                    fontSize: '0.75rem',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid ' + (activePresetTab === tab.id ? 'var(--primary)' : 'var(--border-color)'),
-                    backgroundColor: activePresetTab === tab.id ? 'var(--primary)' : '#ffffff',
-                    color: activePresetTab === tab.id ? '#ffffff' : 'var(--text-body)',
-                    cursor: 'pointer',
-                    fontWeight: 700,
-                    whiteSpace: 'nowrap',
-                    transition: 'all 0.2s ease'
-                  }}
-                >
-                  {tab.name}
-                </button>
-              ))}
-            </div>
-
-            {/* Presets List */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-              {BODY_PRESETS.find(t => t.id === activePresetTab)?.presets.map((preset, idx) => (
-                <button
-                  key={idx}
-                  type="button"
-                  className="preset-tag-btn"
-                  style={{
-                    fontSize: '0.725rem',
-                    padding: '0.25rem 0.5rem',
-                    backgroundColor: '#ffffff',
-                    border: '1px solid var(--border-color)',
-                    borderRadius: '6px',
-                    cursor: 'pointer',
-                    fontWeight: 600,
-                    color: 'var(--text-body)',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onClick={() => applyPreset(preset)}
-                >
-                  📍 {preset.label} ({preset.language.split(' ')[0]})
-                </button>
-              ))}
-            </div>
-          </div>
 
           <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1.2fr', gap: '1rem', marginBottom: '1rem' }}>
             <div className="form-group">
@@ -632,16 +525,8 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({ isOnline, onNewInt
             </div>
           ) : (
             <div className="form-group" style={{ marginBottom: '1.25rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
+              <div style={{ marginBottom: '0.4rem' }}>
                 <label htmlFor="p-symptoms" style={{ fontSize: '0.8rem', fontWeight: 800 }}>Describe symptoms</label>
-                <button
-                  type="button"
-                  className="view-btn"
-                  style={{ fontSize: '0.75rem', padding: '0.1rem 0.4rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius-sm)', backgroundColor: '#ffffff' }}
-                  onClick={loadExampleText}
-                >
-                  Load Example Text
-                </button>
               </div>
               <textarea
                 id="p-symptoms"
@@ -666,7 +551,7 @@ export const PatientIntake: React.FC<PatientIntakeProps> = ({ isOnline, onNewInt
             style={{ width: '100%', padding: '0.75rem', fontSize: '0.95rem', fontWeight: 800 }}
             disabled={isSubmitting || !symptomText.trim()}
           >
-            {isSubmitting ? 'Analyzing symptoms with Gemini API...' : '🚀 Submit to Clinical Queue'}
+            {isSubmitting ? 'Processing symptoms...' : '🚀 Submit to Clinical Queue'}
           </button>
         </form>
       ) : (

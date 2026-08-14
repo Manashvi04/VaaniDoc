@@ -22,6 +22,7 @@ interface IntakeSession {
   smartQuestions?: string[];
   treatmentDraft?: string;
   patientFriendlySummary?: string;
+  confidence?: number;
   isOfflineGenerated?: boolean;
 }
 
@@ -195,6 +196,12 @@ ${selectedSession.treatmentDraft || 'N/A'}
   const selectedSession = sessions.find(s => s.sessionId === selectedSessionId);
   const urgentCount = sessions.filter(s => s.urgencyClassification === 'Emergency' || s.urgencyClassification === 'High').length;
   const offlineCount = sessions.filter(s => s.isOfflineGenerated).length;
+  const averageExtractionConfidence = sessions.length > 0
+    ? Math.round((sessions.reduce((total, session) => total + (typeof session.confidence === 'number' ? session.confidence : 0.5), 0) / sessions.length) * 100)
+    : null;
+  const selectedConfidence = selectedSession && typeof selectedSession.confidence === 'number'
+    ? Math.round(selectedSession.confidence * 100)
+    : null;
 
   // Filtered queue compilation
   const filteredSessions = sortSessionsByUrgency(sessions).filter((s) => {
@@ -419,7 +426,7 @@ ${selectedSession.treatmentDraft || 'N/A'}
                   <div className="clinical-header-cell">
                     <strong style={{ display: 'block', fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>LLM Extraction Confidence</strong>
                     <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--primary)' }}>
-                      {selectedSession.isOfflineGenerated ? 'N/A (Local Rules)' : '94% (Structured validation)'}
+                      {selectedSession.isOfflineGenerated ? 'N/A (Local Rules)' : (selectedConfidence !== null ? `${selectedConfidence}%` : 'Calculating...')}
                     </span>
                   </div>
                 </div>
@@ -786,7 +793,7 @@ ${selectedSession.treatmentDraft || 'N/A'}
                     </div>
                     <div className="analytics-stat-box" style={{ padding: '0.75rem', backgroundColor: '#f8fafc', border: '1px solid #e2e8f0', borderRadius: '8px', textAlign: 'center' }}>
                       <div className="analytics-stat-value" style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--primary)' }}>
-                        {sessions.length > 0 ? '94%' : 'N/A'}
+                        {averageExtractionConfidence !== null ? `${averageExtractionConfidence}%` : 'N/A'}
                       </div>
                       <div className="analytics-stat-label" style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 700 }}>AI Accuracy Average</div>
                     </div>
