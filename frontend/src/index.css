@@ -607,6 +607,7 @@ body {
 
 .details-body {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   padding: 1.75rem;
 }
@@ -1225,16 +1226,16 @@ body {
 }
 
 /* Consultation decision-support workspace */
-.copilot-workspace { border: 1px solid #d8e7e3; border-radius: 14px; overflow: hidden; background: #fff; box-shadow: 0 7px 20px rgba(15,61,58,.05); }
-.copilot-workspace-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem 0; border-bottom: 1px solid #e2ece9; background: #fbfefd; }
+.copilot-workspace { width: 100%; height: auto; min-height: 320px; flex: 0 0 auto; display: flex; flex-direction: column; border: 1px solid #d8e7e3; border-radius: 14px; overflow: visible; background: #fff; box-shadow: 0 7px 20px rgba(15,61,58,.05); }
+.copilot-workspace-heading { flex-shrink: 0; display: flex; align-items: flex-end; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem 0; border-bottom: 1px solid #e2ece9; border-radius: 14px 14px 0 0; background: #fbfefd; }
 .copilot-workspace-heading h3 { margin: .15rem 0 1rem; color: #153f3b; font: 800 1.05rem var(--font-title); }
 .copilot-kicker { margin: 0; color: #68827e; font-size: .66rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-.copilot-tabs { display: flex; gap: .25rem; }
+.copilot-tabs { flex-shrink: 0; display: flex; gap: .25rem; }
 .copilot-tab { width: auto; padding: .65rem .85rem .72rem; border: 0; border-bottom: 3px solid transparent; background: transparent; color: #607a76; font: 750 .78rem var(--font-title); cursor: pointer; white-space: nowrap; }
 .copilot-tab:hover { color: var(--primary); background: #f1faf7; }
 .copilot-tab.active { color: #087d70; border-bottom-color: #0d9488; background: #eefaf7; }
 .copilot-tab:focus-visible { outline: 3px solid rgba(13,148,136,.25); outline-offset: -3px; }
-.copilot-panel { padding: 1.2rem; }
+.copilot-panel { display: block; width: 100%; height: auto; flex: 0 0 auto; overflow: visible; padding: 1.2rem; box-sizing: border-box; }
 .copilot-section-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .9rem; }
 .copilot-section-card { min-width: 0; padding: 1rem; border: 1px solid #dfeae7; border-radius: 10px; background: #fff; }
 .copilot-section-card h4, .handout-card h4 { margin: 0 0 .55rem; color: #173f3b; font: 800 .88rem var(--font-title); }
