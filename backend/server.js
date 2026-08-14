@@ -39,6 +39,20 @@ const io = new Server(server, {
   },
 });
 
+const isRealPatientIntake = (session = {}) => {
+  const text =
+    session.originalSymptomsText ||
+    session.translatedSymptomsText ||
+    session.chiefComplaint ||
+    session.chief_complaint ||
+    "";
+
+  return (
+    Boolean(text.trim()) ||
+    (session.patientName && session.patientName !== "Anonymous")
+  );
+};
+
 // WebSocket Connection Handler
 io.on("connection", (socket) => {
   console.log(`Client connected: ${socket.id}`);
@@ -47,7 +61,9 @@ io.on("connection", (socket) => {
   // snake_case shape and need mapping before the dashboard can consume them.
   socket.emit(
     "sessions-update",
-    Array.from(activeSessions.values()).map(mapIntakeSession),
+    Array.from(activeSessions.values())
+      .filter(isRealPatientIntake)
+      .map(mapIntakeSession),
   );
 
   socket.on("disconnect", () => {
@@ -226,12 +242,11 @@ app.post("/api/session/start", (req, res) => {
     timestamp: new Date().toISOString(),
     isOfflineGenerated: false,
     originalSymptomsText: "",
-    patientName: "Anonymous",
-    age: "Unknown",
-    gender: "Unknown",
+    patientName: "",
+    age: "",
+    gender: "",
     languageSpoken: "English",
   };
-  activeSessions.set(sessionId, initialSession);
   console.log(`Clinical session started: ${sessionId}`);
   return res
     .status(200)
@@ -331,7 +346,9 @@ app.post("/api/analyze", async (req, res) => {
       // Only genuine patient intakes are visible to the attending clinician.
       io.emit(
         "sessions-update",
-        Array.from(activeSessions.values()).map(mapIntakeSession),
+        Array.from(activeSessions.values())
+          .filter(isRealPatientIntake)
+          .map(mapIntakeSession),
       );
       io.emit("new-session", mappedSession);
     }
@@ -392,7 +409,9 @@ app.post("/api/sync-offline", async (req, res) => {
 
     io.emit(
       "sessions-update",
-      Array.from(activeSessions.values()).map(mapIntakeSession),
+      Array.from(activeSessions.values())
+        .filter(isRealPatientIntake)
+        .map(mapIntakeSession),
     );
     io.emit("new-session", mappedSession);
 
@@ -405,9 +424,9 @@ app.post("/api/sync-offline", async (req, res) => {
 
 // Endpoint to fetch all active sessions for the doctor dashboard
 app.get("/api/active-sessions", (req, res) => {
-  const sessions = Array.from(activeSessions.values()).map((s) =>
-    mapIntakeSession(s),
-  );
+  const sessions = Array.from(activeSessions.values())
+    .filter(isRealPatientIntake)
+    .map((s) => mapIntakeSession(s));
   return res.status(200).json(sessions);
 });
 
