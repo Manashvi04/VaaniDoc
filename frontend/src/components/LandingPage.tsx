@@ -1,4 +1,5 @@
 import React from 'react';
+import { BlurText } from './BlurText';
 
 interface LandingPageProps {
   lowBandwidthMode: boolean;
@@ -23,7 +24,13 @@ export const LandingPage: React.FC<LandingPageProps> = ({ lowBandwidthMode, onLo
     <main className="landing-hero">
       <section className="hero-copy">
         <div className="hero-eyebrow"><span></span> Built for connected care, anywhere</div>
-        <h1>Care begins with being <em>understood.</em></h1>
+        <BlurText
+          as="h1"
+          text={<>Care begins with being <em>understood.</em></>}
+          delay={150}
+          animateBy="words"
+          direction="top"
+        />
         <p>Patients speak naturally in the language they trust. VaaniDoc turns their words into a structured, clinician-ready intake—privately and locally.</p>
         <div className="landing-actions">
           <button className="btn btn-primary landing-primary" onClick={() => navigateTo('/patient')}>Start patient intake <span>→</span></button>
